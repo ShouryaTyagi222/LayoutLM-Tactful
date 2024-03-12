@@ -1,57 +1,70 @@
-# Tactful
+# LayoutLM+Tactful
+## Required Data 
+- Query Images - Folders of Images divided based on Classes.
+- Splitted Data  - Splitted Train, lake and Val Dataset.(Images and Required input to the layoutlm model
+- Class Wise Annotations - Class Annotations Details of Every Image (Classes along with their bounding box information for every image.
+- Banned_txt_file - a txt file consisting of the names of the files which are to be avoided for the training.
 
-## config
-`configs.py` consists of the required configs for the model training
-- Tactful strategy - what tactful method to use
-- MAPPING - Mapper for the classes
-- total_budget - Total data points available
-- lake size - Size of the lake dataset
-- train_size - size fo the training dataset
-- category - target class of the data for which the tactful is going to be used
-- proposal_budget -Budget for proposal generation
-- train_path - Path to the output dir where the model will be saved and validation results
-- query_path - Path where query Dataset is available
-- model_cfg - Provide the model_zoo model config for the required model.
-- cfg - configs for the Required model
-    1. NUM_WORKER - Number of Workers
-    2. NUM_CLASSES - Number of Classes in the Data
-    3. BASE_LR - Learning Rate
-    4. IMS_PER_BATCH - Batch Size
-- train/lake/test/val_data_dirs - Here provide the path to the img folder and coco file path for thhe required type of data.
+## Data Preparation
+To Prepare Query Image , run query_gen.py
 
-## train
+```python query_gen.py -i FULL_IMAGE_FOLDER -c FOLDER_CONSISTING_OF_RAW_ANNOTATED_FILES  -q OUTPUT_FOLDER_PATH```
+
+The Following will generate a folder of the folders of query Images on the Basis of classes.
+
+To Prepare Data - Preprocess the RAW_DATA_FILES by running data/prepare_data.py
+```Adjust the tokenizer_checkpoints
+Input_file_folder : path to the folder of raw Data files.
+Img_dir : Path to the Full Images Folder
+Output_dir : Path to the output Images folder.
+Image_width & Image_height
 ```
-python train.py -i -m <INITIAL_MODEL_PATH>
+The following will generate a separate processed file for each raw data file for both layoutlmV2 and layoutlmv3.
+If the data files are required to be merged manually use data/merge_json_data.py
+
+Then to split the data into train, val and lake run split_data.py
 ```
-## infer
+python split_data.py -i  PREPARED_JSON_FILE -d FULL_IMAGES_FOLDER -o OUTPUT_FOLDER
 ```
-python infer.py -i <INPUT_IMG_PATH> 
+The Following will divide the Data into Train, Val and lake set in the given output folder.
+To Prepare the class Wise Annotations File , run prepare_annot.py
 ```
-
-Note :
-- the data is in Data folder
-- to prepare data for training run coco_converter.py
-- The outputs are saved in faster_rcnn_output.
-- The val scores are in faster_rcnn_output/<strategy>/initial_training/val_scores.csv
-- the Logs of the training are saved in faster_rcnn_output/<strategy>/initial_training/<strategy>log.txt
-- Prepare the data using coco_converter.py before training everytime because of active learning the images are transfered from lake set to train set.
-
-
-## Detectron2 Installation
-
-- conda install pytorch==1.10.0 torchvision==0.11.1 torchaudio==0.10.0 cudatoolkit=11.0 -c pytorch
-- conda install cython
-- git clone https://github.com/facebookresearch/detectron2.git
-- cd detectron2
-- pip install -e .
-- conda install pytorch torchvision torchaudio cudatoolkit=11.5 -c pytorch
+python prepare_annots.py -i FULL_IMAGE_FOLDER -c FOLDER_CONSISTING_OF_RAW_ANNOTATED_FILES -q OUTPUT_FOLDER_PATH
+```
+The Following will generate data file for the class wise annotations.
 
 
 
+## Training 
+- Model Configurations : 
+1. Basic Configuration
+2. Strategy: fl2mi - The strategy used for tactful active learning.
+3. Total Budget: 1000 - Total data points available for training.
+4. Budget: 20 - Budget per iteration for selecting data points.
+5. Lake Size: 1278 - Size of the lake dataset (unlabeled data).
+6. Train Size: 10 - Size of the initial training dataset.
+7. Category: 'Reference Block' - Target class for training.
+8. Device: 0 - GPU Device to be used.
+9. Proposal Budget: 20 - Budget for proposal generation in each iteration.Iterations: 30 - Total active learning rounds.
+10. Batch Size: 4 - Batch size used during training.
+- Model Configuration
+1. Model Name: layoutlmv3 - Name of the model to be trained (layoutlmv2 or layoutlmv3).
+2. Learning Rate: 1e-7 - Learning rate used for model training.
+3. Epoch Threshold: 1 - The epoch count after which the model starts saving sample questions and answers for every 5 epochs.
+- Data Paths
+1. Train Path: /data/circulars/DATA/layoutLM+Tactful/model_output7 - Path of the output directory.
+2. Data Directory: /data/circulars/DATA/layoutLM+Tactful/layoutlmv3_data_2 - Path to the splitted data directory.
+3. Query Path: /data/circulars/DATA/layoutLM+Tactful/query_images - Path to the query images folder.
+4. Banned Text Path: /data/circulars/DATA/LayoutLM/docvqa_dataset/banned_txt_files.txt - Path to the text file consisting of banned - files names.
+1. Initial Model Path: microsoft/layoutlmv3-large - Path to the initial pre-trained model.
+2. Full Data Annotations: /data/circulars/DATA/layoutLM+Tactful/full_data_annots.json - Path to the file containing class-wise annotations of the data.
+- Wandb (Weights & Biases) 
+1. ConfigurationWandb Flag: 1 - Flag indicating whether to use Wandb for logging.
+2. Wandb Project Description: layoutlm_Tactful_FineTuning_layoutlmv3 - Description of the project in Wandb.
+3. Wandb Name: <train_path_basename>_fl2mi_1e-7_4 - Name for Wandb run.
+4. Wandb Model Description: layoutlmv3 - Fine Tuned on DocVQA using layoutlm+tactful - Description of the model for Wandb.
+5. Wandb Key: API key for Wandb.Questions for Different Classes
+- Label to Question: Mapping between class labels and corresponding questions for model evaluation.
 
-scripts to update for udop 
-1. query_gen - fix it for our data *
-2. coco_converter - convert it to prepare and split data for udop using prepare_data_udop.py*
-3. config - update for our use case*
-4. helper - add function associatedfor out data
-5. train - add training code for udop 
+	After Adjusting the configurations you can start the Training,	
+		Python train.py
