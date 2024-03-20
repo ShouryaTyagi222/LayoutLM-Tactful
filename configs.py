@@ -16,7 +16,6 @@ args = {
     "iterations":100,   # Total AL Rounds
     "batch_size":4    # Batch Size
 }
-args["output_path"] = args['strategy']
 
 
 # Name of the model to be trained layoutlmv2/layoutlmv3
@@ -25,10 +24,11 @@ learning_rate = 1e-5         # Learning Rate of the Model Training
 epoch_t=1                    # The Epoch count after which the the model starts saving the sample question and answers for every 5 epochs
 init_epochs = 30                # The Epoch count of the Initial Training
 al_epochs = 100                # The Epoch count of Each Active Learning round
-ROUGE_THRESH = 0.95
-TRAIN_LOSS_THRESH = 0.4
-EPOCH_THRESH = 1
-SCHEDULER_T_MAX = 30
+ROUGE_THRESH = 0.95          # Threshold for Training a Round BAsed on Rouge-L F1 Score
+TRAIN_LOSS_THRESH = 0.4      # Threshold for Training a Round BAsed on Train Loss
+EPOCH_THRESH = 1            # Threshold for Minimum Epoch in a Round
+SCHEDULER_T_MAX = 30        # Steps for the Scheduler
+SATURATION_THRESH = 5       # Minimum epochs for Saturated Train Loss
 
 
 # Requried data paths
@@ -38,7 +38,7 @@ query_path = '/data/circulars/DATA/layoutLM+Tactful/query_images'  # path to the
 banned_txt_path = '/data/circulars/DATA/LayoutLM/docvqa_dataset/banned_txt_files.txt'  # path to the txt file consisting of the names of the banned files
 init_model_path = 'microsoft/layoutlmv3-large'   # Initial model Path
 full_data_annots = '/data/circulars/DATA/layoutLM+Tactful/full_data_annots.json'  # Path to the file consisting of the class wise annotations of the data
-images_dir = '/data/circulars/DATA/LayoutLM/docvqa_dataset/Images'
+images_dir = '/data/circulars/DATA/LayoutLM/docvqa_dataset/Images'   # Path to the Image Directory
 
 # Wandb Credentials
 wandb_flag=1
@@ -76,6 +76,7 @@ val_data_dirs = (os.path.join(data_dir,"val"),
 
 query_path = os.path.join(query_path, args['category'])
 
+args["output_path"] = args['strategy']
 training_name = args['output_path']
 model_path = os.path.join(train_path, training_name)
 if (not os.path.exists(model_path)):

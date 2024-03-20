@@ -38,33 +38,42 @@ The Following will generate data file for the class wise annotations.
 ## Training 
 - Model Configurations : 
 1. Basic Configuration
-2. Strategy: fl2mi - The strategy used for tactful active learning.
-3. Total Budget: 1000 - Total data points available for training.
-4. Budget: 20 - Budget per iteration for selecting data points.
-5. Lake Size: 1278 - Size of the lake dataset (unlabeled data).
-6. Train Size: 10 - Size of the initial training dataset.
-7. Category: 'Reference Block' - Target class for training.
-8. Device: 0 - GPU Device to be used.
-9. Proposal Budget: 20 - Budget for proposal generation in each iteration.Iterations: 30 - Total active learning rounds.
-10. Batch Size: 4 - Batch size used during training.
+2. Strategy - The strategy used for tactful active learning.
+3. Total Budget - Total data points available for training.
+4. Budget - Budget per iteration for selecting data points.
+5. Lake Size - Size of the lake dataset (unlabeled data).
+6. Train Size - Size of the initial training dataset.
+7. Category - Target class for training.
+8. Device - GPU Device to be used.
+9. Proposal Budget - Budget for proposal generation in each iteration.Iterations: 30 - Total active learning rounds.
+10. Batch Size - Batch size used during training.
 - Model Configuration
-1. Model Name: layoutlmv3 - Name of the model to be trained (layoutlmv2 or layoutlmv3).
-2. Learning Rate: 1e-7 - Learning rate used for model training.
-3. Epoch Threshold: 1 - The epoch count after which the model starts saving sample questions and answers for every 5 epochs.
+1. Model Name - Name of the model to be trained (layoutlmv2 or layoutlmv3).
+2. Learning Rate - Learning rate used for model training.
+3. ROUGE_THRESH - Threshold for Training a Round BAsed on Rouge-L F1 Score
+4. TRAIN_LOSS_THRESH - Threshold for Training a Round BAsed on Train Loss
+5. EPOCH_THRESH - Threshold for Minimum Epoch in a Round
+6. SCHEDULER_T_MAX - Steps for the Scheduler
 - Data Paths
-1. Train Path: /data/circulars/DATA/layoutLM+Tactful/model_output7 - Path of the output directory.
-2. Data Directory: /data/circulars/DATA/layoutLM+Tactful/layoutlmv3_data_2 - Path to the splitted data directory.
-3. Query Path: /data/circulars/DATA/layoutLM+Tactful/query_images - Path to the query images folder.
-4. Banned Text Path: /data/circulars/DATA/LayoutLM/docvqa_dataset/banned_txt_files.txt - Path to the text file consisting of banned - files names.
-1. Initial Model Path: microsoft/layoutlmv3-large - Path to the initial pre-trained model.
-2. Full Data Annotations: /data/circulars/DATA/layoutLM+Tactful/full_data_annots.json - Path to the file containing class-wise annotations of the data.
+1. Train Path - Path of the output directory.
+2. Data Directory - Path to the splitted data directory.
+3. Query Paths - Path to the query images folder.
+4. Banned Text Path - Path to the text file consisting of banned - files names.
+1. Initial Model Path - Path to the initial pre-trained model.
+2. Full Data Annotations - Path to the file containing class-wise annotations of the data.
 - Wandb (Weights & Biases) 
-1. ConfigurationWandb Flag: 1 - Flag indicating whether to use Wandb for logging.
-2. Wandb Project Description: layoutlm_Tactful_FineTuning_layoutlmv3 - Description of the project in Wandb.
-3. Wandb Name: <train_path_basename>_fl2mi_1e-7_4 - Name for Wandb run.
-4. Wandb Model Description: layoutlmv3 - Fine Tuned on DocVQA using layoutlm+tactful - Description of the model for Wandb.
+1. ConfigurationWandb Flag - Flag indicating whether to use Wandb for logging.
+2. Wandb Project Description - Description of the project in Wandb.
+3. Wandb Name - Name for Wandb run.
+4. Wandb Model Description - Description of the model for Wandb.
 5. Wandb Key: API key for Wandb.Questions for Different Classes
 - Label to Question: Mapping between class labels and corresponding questions for model evaluation.
 
 	After Adjusting the configurations you can start the Training,	
-		Python train.py
+		```
+		python train.py
+		```
+
+
+## Author
+1. Shourya Tyagi (Intern)

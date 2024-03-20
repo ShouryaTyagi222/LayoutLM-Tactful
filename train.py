@@ -34,10 +34,11 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
     rougel_f_tr=0
     prev_train_loss = 0
     train_loss = 1
+    sat_epoch = 0
     print('T_max :',iteration*al_epochs)
     # for epoch in range(init_epochs):  # loop over the dataset multiple times
 
-    while (rougel_f_tr<=ROUGE_THRESH and round(train_loss,3)!=round(prev_train_loss,3) and train_loss>=TRAIN_LOSS_THRESH) or epoch<EPOCH_THRESH:    # and epoch<=init_epochs:
+    while (rougel_f_tr<=ROUGE_THRESH and sat_epoch < SATURATION_THRESH and train_loss>=TRAIN_LOSS_THRESH) or epoch<EPOCH_THRESH:    # and epoch<=init_epochs:
         model.train()
         progbar = tqdm(train_dataloader, desc=f'Epoch {epoch+1}, Train Loss = 0, current loss = 0 , Bleu Score = 0', unit='batch')
         Loss=[]
@@ -107,6 +108,11 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
 
         prev_train_loss = train_loss 
         train_loss=np.mean(Loss)
+
+        if round(train_loss,3)!=round(prev_train_loss,3):
+            sat_epoch+=1
+        else:
+            sat_epoch = 0
 
         model.eval()
         Loss = []
