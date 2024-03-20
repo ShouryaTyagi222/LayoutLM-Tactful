@@ -219,7 +219,7 @@ def crop_images_classwise_ground_truth(train_json_path, src_path, dest_path,
                     x,y,w,h=int(img_annot['x']),int(img_annot['y']),int(img_annot['w']),int(img_annot['h'])
                     crp_img=img[y:y+h,x:x+w]
                     if y+h<224 and x+w<224:
-                        cv2.imwrite(os.path.join(obj_im_dir,category,img_name.split('.')[0]+'_'+str(i)+'.png'),crp_img)
+                        cv2.imwrite(os.path.join(obj_im_dir,category,'.'.join(img_name.split('.')[:-1])+'_'+str(i)+'.png'),crp_img)
                     # print("Saved classwise ground truth cropped image to: ", os.path.join(obj_im_dir,category,img_name.split('.')[0]+'_'+str(i)+'.png'),crp_img)
 
 '''
@@ -253,9 +253,9 @@ def crop_images_classwise(lake_json_path, src_path, dest_path,
                 crp_img=img[y:y+h,x:x+w]
                 # print(os.path.join(obj_im_dir,category,img_name.split('.')[0]+'_'+str(i)+'.png'),crp_img)
                 try:
-                    cv2.imwrite(os.path.join(obj_im_dir,category,img_name.split('.')[0]+'_'+str(i)+'.png'),crp_img)
+                    cv2.imwrite(os.path.join(obj_im_dir,category,'.'.join(img_name.split('.')[:-1])+'_'+str(i)+'.png'),crp_img)
                 except:
-                    print('crp img',crp_img)
+                    print('crp img',img_name)
 
     print("Number of objects: " + str(no_of_objects))
 

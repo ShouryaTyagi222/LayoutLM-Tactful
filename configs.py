@@ -13,17 +13,22 @@ args = {
     "category":'Reference Block',   # Target Class     Note : use Stamps-Seals instead of Stamps/Seals due to path issues
     "device":0,   # GPU Device
     "proposal_budget":20,  # Budget for proposal generation
-    "iterations":30,   # Total AL Rounds
+    "iterations":100,   # Total AL Rounds
     "batch_size":4    # Batch Size
 }
 args["output_path"] = args['strategy']
+
 
 # Name of the model to be trained layoutlmv2/layoutlmv3
 model_name = 'layoutlmv3'    # Name of the Model
 learning_rate = 1e-5         # Learning Rate of the Model Training
 epoch_t=1                    # The Epoch count after which the the model starts saving the sample question and answers for every 5 epochs
-init_epochs=3                # The Epoch count of the Initial Training
-al_epochs = 5                # The Epoch count of Each Active Learning round
+init_epochs = 30                # The Epoch count of the Initial Training
+al_epochs = 100                # The Epoch count of Each Active Learning round
+ROUGE_THRESH = 0.95
+TRAIN_LOSS_THRESH = 0.4
+EPOCH_THRESH = 1
+SCHEDULER_T_MAX = 30
 
 
 # Requried data paths
@@ -33,11 +38,12 @@ query_path = '/data/circulars/DATA/layoutLM+Tactful/query_images'  # path to the
 banned_txt_path = '/data/circulars/DATA/LayoutLM/docvqa_dataset/banned_txt_files.txt'  # path to the txt file consisting of the names of the banned files
 init_model_path = 'microsoft/layoutlmv3-large'   # Initial model Path
 full_data_annots = '/data/circulars/DATA/layoutLM+Tactful/full_data_annots.json'  # Path to the file consisting of the class wise annotations of the data
+images_dir = '/data/circulars/DATA/LayoutLM/docvqa_dataset/Images'
 
 # Wandb Credentials
 wandb_flag=1
 wandb_project_desc=f'layoutlm_Tactful_FineTuning_{model_name}'
-wandb_name=f'{os.path.basename(train_path)}_{args["strategy"]}_{learning_rate}_{args["batch_size"]}'
+wandb_name=f'{os.path.basename(train_path)}_{args["strategy"]}_{learning_rate}_{args["batch_size"]}_{ROUGE_THRESH}'
 wandb_model_desc=f'{model_name} - Fine Tuned on DocVQA using layoutlm+tactful'
 wandb_key='ead46cf543385050fcec224a0c2850faffcae584'
 
