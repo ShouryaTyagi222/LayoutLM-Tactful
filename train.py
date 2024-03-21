@@ -34,6 +34,7 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
     rougel_f_tr=0
     prev_train_loss = 0
     train_loss = 1
+    temp_train_loss = 1
     sat_epoch = 0
     print('T_max :',iteration*al_epochs)
     # for epoch in range(init_epochs):  # loop over the dataset multiple times
@@ -107,12 +108,13 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
         print(f'Epoch : {epoch+1}, learning rate : {optimizer.param_groups[0]["lr"]}')
 
         prev_train_loss = train_loss 
-        train_loss=np.mean(Loss)
-
-        if round(train_loss,3)!=round(prev_train_loss,3):
+        
+        if abs(round(np.mean(Loss),1)-round(prev_train_loss,1))<0.1:
             sat_epoch+=1
         else:
             sat_epoch = 0
+            train_loss=np.mean(Loss)
+        temp_train_loss=np.mean(Loss)
 
         model.eval()
         Loss = []
@@ -168,7 +170,7 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
 
         if wandb_flag:
             wandb.log({
-                "Training Loss": train_loss,
+                "Training Loss": temp_train_loss,
                 "Testing Loss": np.mean(Loss),
                 "Bleu Score":  np.mean(bleu_scores),
                 "Rouge-1 Recall": rouge1_p,

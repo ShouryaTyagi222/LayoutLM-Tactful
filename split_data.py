@@ -38,30 +38,37 @@ def main(args):
     train_data=[]
     val_data=[]
     lake_data=[]
+    skipped_images = []
 
     for document in data:
-        img_name=document['file_name']
-        img_path=os.path.join(image_dir,img_name)
-        img=Image.open(img_path)
-        
-        split=random.randint(0,2)
+        try:
+            img_name=document['file_name']
+            img_path=os.path.join(image_dir,img_name)
+            img=Image.open(img_path)
+            
+            split=random.randint(0,2)
 
-        if tr<train_split and split==0:
-            train_data.append(document)
-            tr+=1
-            img.save(os.path.join(output_dir,'train',img_name))
-        elif va<val_split and split==1:
-            val_data.append(document)
-            va+=1
-            img.save(os.path.join(output_dir,'val',img_name))
-        else:
-            lake_data.append(document)
-            la+=1
-            img.save(os.path.join(output_dir,'lake',img_name))
+            if tr<train_split and split==0:
+                train_data.append(document)
+                tr+=1
+                img.save(os.path.join(output_dir,'train',img_name))
+            elif va<val_split and split==1:
+                val_data.append(document)
+                va+=1
+                img.save(os.path.join(output_dir,'val',img_name))
+            else:
+                lake_data.append(document)
+                la+=1
+                img.save(os.path.join(output_dir,'lake',img_name))
 
-        print(img_name)
-        print([tr,va,la])
-        print([len(os.listdir(output_dir+'/train')),len(os.listdir(output_dir+'/val')),len(os.listdir(output_dir+'/lake'))])
+            print(img_name)
+            print([tr,va,la])
+            print([len(os.listdir(output_dir+'/train')),len(os.listdir(output_dir+'/val')),len(os.listdir(output_dir+'/lake'))])
+        except Exception as e:
+            skipped_images.append(img_name)
+            print(e)
+    print('IMAGES SKIPPED :',skipped_images)
+    print('SKIPPED IMAGES LENGTH :',len(skipped_images))
 
     with open(os.path.join(output_dir,'docvqa_train.json'), 'w') as json_file:
         json.dump(train_data, json_file,indent=4)
