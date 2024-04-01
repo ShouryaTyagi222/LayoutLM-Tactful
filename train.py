@@ -20,7 +20,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from nltk.translate.bleu_score import corpus_bleu
 from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
 
 from src.tactful_smi import TACTFUL_SMI
@@ -109,7 +108,7 @@ def run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,devic
 
         prev_train_loss = train_loss 
         
-        if abs(round(np.mean(Loss),1)-round(prev_train_loss,1))<0.1:
+        if abs(round(np.mean(Loss),2)-round(prev_train_loss,2))<=0.05:
             sat_epoch+=1
         else:
             sat_epoch = 0
@@ -297,9 +296,8 @@ def main():
                 os.remove(os.path.join(model_path, "data.csv"))
             except:
                 pass
-            #l_model = create_model(cfg,'test')
             crop_images_classwise(
-                full_data_annots, lake_data_dirs[0], os.path.join(model_path, "lake_images"), proposal_budget=proposal_budget)
+                lake_data_dirs[0], os.path.join(model_path, "lake_images"), proposal_budget=proposal_budget)
             
             print("----------Crop Images Classwise DONE-------")
 

@@ -83,7 +83,7 @@ def parse_args():
     parser.add_argument("-i", "--data_file", default=None, type=str, help="Path to the input json file")
     parser.add_argument("-d", "--img_dir", default=None, type=str, help="Path to the image Directory")
     parser.add_argument("-o", "--output_dir", default='/', type=str, help="Path to the Output Folder")
-    parser.add_argument("-t", "--train_length", default='10', type=str, help="Train split of the data")
+    parser.add_argument("-t", "--train_length", default='20', type=str, help="Train split of the data")
     parser.add_argument("-v", "--val_length", default='200', type=str, help="Val split of the data")
     args = parser.parse_args()
     return args
