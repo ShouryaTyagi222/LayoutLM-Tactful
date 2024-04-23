@@ -2,7 +2,6 @@
 # Date: March 20, 2024
 # Description: Training Code for LayoutLM+Tactful
 
-# python train.py
 import os
 import torch
 import argparse
@@ -244,7 +243,6 @@ def main():
         train_dataloader=load_data(train_data_dirs[1],train_data_dirs[0], args['batch_size'], banned_txt_path)
         test_dataloader=load_data(val_data_dirs[1],val_data_dirs[0], args['batch_size'], banned_txt_path)
 
-        # del l_model
         torch.cuda.empty_cache()
 
         model.train()
@@ -286,7 +284,7 @@ def main():
             # The set is part of train set, so no need of using object detection model to find the bounding box.
             print('>>>',query_path)
             print('>>>',os.path.join(model_path,'query_images'))
-            crop_images_classwise_ground_truth(full_data_annots, query_path, os.path.join(
+            crop_images_classwise_ground_truth(full_data_annots, train_data_dirs[0], query_path, os.path.join(
                 model_path, "query_images"), args['category'])
             
             print("----------Crop Images Classwise ground truth DONE-------")
@@ -330,7 +328,6 @@ def main():
         train_dataloader=load_data(train_data_dirs[1],train_data_dirs[0], args['batch_size'], banned_txt_path)
         test_dataloader=load_data(val_data_dirs[1],val_data_dirs[0], args['batch_size'], banned_txt_path)
 
-        # del l_model
         torch.cuda.empty_cache()
 
         model, scheduler, optimizer = run_a_round(train_dataloader,test_dataloader,scheduler,optimizer,model,device,smoother,tokenizer,wandb_flag,iteration,target_question)

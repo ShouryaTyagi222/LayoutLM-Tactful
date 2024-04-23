@@ -1,8 +1,8 @@
 # LayoutLM+Tactful
 ## Required Data 
 - Query Images - Folders of Images divided based on Classes.
-- Splitted Data  - Splitted Train, lake and Val Dataset.(Images and Required input to the layoutlm model
-- Class Wise Annotations - Class Annotations Details of Every Image (Classes along with their bounding box information for every image.
+- Splitted Data  - Splitted Train, lake and Val Dataset.(Images and Required input to the layoutlm model)
+- Class Wise Annotations - Class Annotations Details of Every Image (Classes along with their bounding box information for every image).
 - Banned_txt_file - a txt file consisting of the names of the files which are to be avoided for the training.
 
 ## Data Preparation
